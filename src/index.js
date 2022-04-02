@@ -3,10 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { SaasProvider } from '@saas-ui/react'
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <SaasProvider>
+      <App />
+    </SaasProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
