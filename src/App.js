@@ -38,101 +38,87 @@ function App() {
   }
 
   return (
-    <Box>
-      <Container>
-        <Box height="100vh" mt="30vh">
+    <Container>
+      <Box height="100vh" mt="30vh">
+        <Box textAlign="center">
+          <Center>
+            <Image
+              boxSize='45px'
+              objectFit='cover'
+              src='./outline.png'
+            /></Center>
+          <Text fontSize="xl" fontWeight="medium">Easiest way to scan your receipts using Taggun API</Text>
+          <Text fontSize="md" color="gray.500">Upload an image of a store receipt below to see results</Text>
 
+          <VStack mt={16}>
+            {file ? <Box><Text>{file.name}</Text></Box> : <VStack spacing={6}><Box>
+              <label htmlFor="file-upload">
+                <AttachmentIcon /> Click to select receipt
+              </label>
+              <input id="file-upload" type="file" onChange={handleUploadFile} />
+            </Box>
+            </VStack>}
 
-          <Box textAlign="center">
+            {isUploading ? <Loader thickness="2px" /> : <Button size="md" colorScheme="primary" onClick={submitPhoto}>
+              Upload photo
+            </Button>
 
+            }
+            <Link fontSize="xs" colorScheme="primary" href="https://d7pdsiqo9rcig.cloudfront.net/wp-content/uploads/2019/04/receipt-2.jpg">Download a sample one</Link></VStack>
+        </Box>
+
+        {res && <Box>
+          <Box mt={10}>
             <Center>
-              <Image
-                boxSize='45px'
-                objectFit='cover'
-                src='./outline.png'
-              /></Center>
-            <Text fontSize="xl" fontWeight="medium">Easiest way to scan your receipts using Taggun API</Text>
-            <Text fontSize="md" color="gray.500">Upload an image of a store receipt below to see results</Text>
+              <Text fontWeight="medium">Successfully analyzed receipt</Text></Center>
 
-            <VStack mt={16}>
-              {/* <Center>
-                <input type="file" className="form-control" name="upload_file" onChange={handleUploadFile} /></Center> */}
+            <Text fontWeight="medium">Details</Text>
+            <Divider mb={4} />
+            <HStack>
+              <Text width={100}>
+                Receipt #
+              </Text>
+              <Text>
+                {res.data.entities.receiptNumber.data}
+              </Text>
+            </HStack>
 
+            <HStack>
+              <Text width={100}>
+                Tax
+              </Text>
 
-              {file ? <Box><Text>{file.name}</Text></Box> : <VStack spacing={6}><Box>
-                <label htmlFor="file-upload">
-                  <AttachmentIcon /> Click to select receipt
-                </label>
-                <input id="file-upload" type="file" onChange={handleUploadFile} />
-              </Box>
-              </VStack>}
+              <Text>{res.data.entities.multiTaxLineItems[0].data.taxAmount.text}</Text>
+            </HStack>
 
-              {isUploading ? <Loader thickness="2px" /> : <Button size="md" colorScheme="primary" onClick={submitPhoto}>
-                Upload photo
-              </Button>
+            <HStack>
+              <Text width={100}>
+                Merchant
+              </Text>
 
-              }
-              <Link fontSize="xs" colorScheme="primary" href="https://d7pdsiqo9rcig.cloudfront.net/wp-content/uploads/2019/04/receipt-2.jpg">Download a sample one</Link></VStack>
+              <Text>{res.data.merchantName.data}</Text>
+              <Text>{res.data.merchantCity.text}</Text>
+
+            </HStack>
           </Box>
 
-          {res && <Box>
-            <Box mt={10}>
-              <Center>
-                <Text fontWeight="medium">Successfully analyzed receipt</Text></Center>
-
-              <Text fontWeight="medium">Details</Text>
-              <Divider mb={4} />
-              <HStack>
-                <Text width={100}>
-                  Receipt #
-                </Text>
-                <Text>
-                  {res.data.entities.receiptNumber.data}
-                </Text>
-              </HStack>
-
-              <HStack>
-                <Text width={100}>
-                  Tax
-                </Text>
-
-                <Text>{res.data.entities.multiTaxLineItems[0].data.taxAmount.text}</Text>
-              </HStack>
-
-              <HStack>
-                <Text width={100}>
-                  Merchant
-                </Text>
-
-                <Text>{res.data.merchantName.data}</Text>
-                <Text>{res.data.merchantCity.text}</Text>
-
-              </HStack>
+          <Box overflowX="auto" mt={10}>
+            <Text fontWeight="medium">Items</Text>
+            <Divider mb={4} />
+            <Box>
+              <DataTable size="xs" columns={[{ "accessor": "data", "Header": "Currency" }, { "accessor": "currencyCode", "Header": "Name" }, { "accessor": "text", "Header": "Item" }]} data={res.data.amounts} />
             </Box>
 
             <Box overflowX="auto" mt={10}>
-              <Text fontWeight="medium">Items</Text>
+              <Text fontWeight="medium">Full JSON response</Text>
               <Divider mb={4} />
-              <Box>
-                <DataTable size="xs" columns={[{ "accessor": "data", "Header": "Currency" }, { "accessor": "currencyCode", "Header": "Name" }, { "accessor": "text", "Header": "Item" }]} data={res.data.amounts} />
-              </Box>
-
-              <Box overflowX="auto" mt={10}>
-                <Text fontWeight="medium">Full JSON response</Text>
-                <Divider mb={4} />
-                <pre style={{ "fontSize": "12px", "height": "400px", overflow: "scroll", }}>
-                  {JSON.stringify(res, null, 2)}
-                </pre>
-              </Box> </Box>
-          </Box>}
-
-        </Box>
-
-
-        {/* {res &&
-          } */}
-      </Container>
-    </Box >
+              <pre style={{ "fontSize": "12px", "height": "400px", overflow: "scroll", }}>
+                {JSON.stringify(res, null, 2)}
+              </pre>
+            </Box> </Box>
+        </Box>}
+      </Box>
+    </Container>
   );
 }
 
